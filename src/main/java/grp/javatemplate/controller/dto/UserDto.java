@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.time.Instant;
+
 @Data
 public class UserDto {
     private Long id;
@@ -15,4 +17,6 @@ public class UserDto {
     private String name;
 
     private UserRole role;
+
+    private Instant dob;
 }

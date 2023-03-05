@@ -1,5 +1,8 @@
 package grp.javatemplate.service;
 
+import grp.javatemplate.controller.dto.UserDto;
+import grp.javatemplate.exception.UserException;
+import grp.javatemplate.mapper.UserMapper;
 import grp.javatemplate.model.User;
 import grp.javatemplate.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,10 +12,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
+import static grp.javatemplate.exception.UserException.USER_EXISTS;
+
 @RequiredArgsConstructor
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
     private static final String USER_NAME = "name";
 
     public List<User> findAll( String sortBy ) {
@@ -20,6 +26,27 @@ public class UserService {
             return userRepository.findAll(Sort.by(Sort.Direction.ASC, USER_NAME));
         }
         return userRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+    }
+
+    public User save( UserDto userDto ) {
+        if ( userRepository.existsByName(userDto.getName()) ) {
+            throw new UserException(USER_EXISTS);
+        }
+        User user = userMapper.toEntity(userDto);
+        return userRepository.save(user);
+    }
+
+    public User update( User user ) {
+        User existingUser = userRepository.findById(user.getId()).orElseThrow(() -> new UserException(USER_EXISTS));
+        user.setCreatedAt(existingUser.getCreatedAt()).setCreatedBy(existingUser.getCreatedBy());
+        return userRepository.save(user);
+    }
+
+    public void delete( Long id ) {
+        if (!userRepository.existsById(id)) {
+            throw new UserException(USER_EXISTS);
+        }
+        userRepository.deleteById(id);
     }
 
 //    public Order save( OrderDto orderDto ) {

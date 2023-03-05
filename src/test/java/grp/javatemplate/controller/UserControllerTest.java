@@ -1,14 +1,24 @@
 package grp.javatemplate.controller;
 
 import grp.javatemplate.TestObjects;
+import grp.javatemplate.controller.dto.UserDto;
 import grp.javatemplate.model.User;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import java.util.List;
+
+import static grp.javatemplate.TestObjects.createUser;
+import static grp.javatemplate.TestObjects.createUserDto;
+import static grp.javatemplate.exception.UserException.USER_EXISTS;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
 class UserControllerTest extends BaseIntegrationTest {
@@ -16,10 +26,10 @@ class UserControllerTest extends BaseIntegrationTest {
 
     @Test
     void findAll_shouldReturnAllUsersOrderedById() throws Exception {
-        User firstUser = TestObjects.createUser().setName("Alice");
+        User firstUser = createUser().setName("Alice");
         entityManager.persist(firstUser);
 
-        User secondUser = TestObjects.createUser().setName("Bob");
+        User secondUser = createUser().setName("Bob");
         entityManager.persist(secondUser);
 
         mockMvc.perform(get(API_PATH))
@@ -28,6 +38,96 @@ class UserControllerTest extends BaseIntegrationTest {
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].name").value("Alice"));
     }
+
+    @Test
+    void findAll_shouldReturnAllUsersOrderedByName() throws Exception {
+        User firstUser = createUser().setName("Alice");
+        entityManager.persist(firstUser);
+
+        User secondUser = createUser().setName("Bob");
+        entityManager.persist(secondUser);
+
+        mockMvc.perform(get(API_PATH + "?sortBy=name"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].name").value("Alice"));
+    }
+
+    @Test
+    void save_shouldSaveUser() throws Exception {
+        UserDto userDto = createUserDto().setName("Alice");
+        byte[] bytes = getBytes(userDto);
+
+        mockMvc.perform(post(API_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(bytes))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("Alice"))
+                .andExpect(jsonPath("$.dob").value(userDto.getDob().toString()));
+    }
+
+    @Test
+    void update_shouldUpdateUser() throws Exception {
+        User user = createUser().setName("Alice");
+        entityManager.persist(user);
+
+        UserDto userDto = userMapper.toDto(user).setName("Bob");
+        byte[] bytes = getBytes(userDto);
+
+        mockMvc.perform(put(API_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(bytes))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Bob"));
+
+        List<User> createdUsers = findAll(User.class);
+        assertEquals("Bob", createdUsers.get(0).getName());
+        assertNotNull(createdUsers.get(0).getDob());
+        assertNotNull(createdUsers.get(0).getCreatedAt());
+        assertNotNull(createdUsers.get(0).getCreatedBy());
+    }
+
+    @Test
+    void update_shouldReturn404IfUserNotFound() throws Exception {
+        UserDto userDto = createUserDto().setName("Bob");
+        byte[] bytes = getBytes(userDto);
+
+        mockMvc.perform(put(API_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(bytes))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0]").value(USER_EXISTS));
+    }
+
+    @Test
+    void delete_shouldDeleteUser() throws Exception {
+        User user = createUser().setName("Alice");
+        entityManager.persist(user);
+
+        mockMvc.perform(delete(API_PATH + "/" + user.getId()))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        List<User> createdUsers = findAll(User.class);
+        assertEquals(0, createdUsers.size());
+    }
+
+    @Test
+    void delete_shouldReturn404IfUserNotFound() throws Exception {
+        mockMvc.perform(delete(API_PATH + "/1"))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0]").value(USER_EXISTS));
+    }
+
+
+
+
+
 
 //    @Test
 //    void findAll_shouldReturnOrderedList() throws Exception {
