@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: "local"
+  datasource:
+    username: "root"
+    password: "root"
+server:
+  port: 8880

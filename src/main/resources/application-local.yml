@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:8881/DAS_DB
+logging:
+  level:
+    root: info
+corsAllowedOrigin: http://localhost:3000

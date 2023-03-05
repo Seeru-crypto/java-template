@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+  db:
+    image: postgres:14.1
+    container_name: db
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=DEFAULT_DB
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - 8881:5432
+    networks:
+      - DEFAULT_NETWORK
+  spring-api:
+    build:
+      context: ./
+      args:
+        SPRING_DB_PATH: db:5432/DEFAULT_DB
+    environment:
+      'spring.datasource.url': jdbc:postgresql://db:5432/DEFAULT_DB
+      'corsAllowedOrigin': http://178.62.235.154:3000
+    ports:
+      - "8880:8880"
+    container_name: spring-api
+    stdin_open: true
+    depends_on:
+      - db
+    networks:
+      - DEFAULT_NETWORK
+networks:
+  DEFAULT_NETWORK:
