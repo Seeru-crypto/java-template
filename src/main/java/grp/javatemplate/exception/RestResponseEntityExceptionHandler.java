@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.method.annotation.ExceptionHandlerMethodResolver;
-import org.springframework.web.method.support.InvocableHandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
@@ -25,8 +23,8 @@ public class RestResponseEntityExceptionHandler
         extends ResponseEntityExceptionHandler {
 
     @ResponseStatus(BAD_REQUEST)
-    @ExceptionHandler(RuntimeException.class)
-    protected ResponseEntity<Object> handleConflict( RuntimeException ex ) {
+    @ExceptionHandler(BusinessException.class)
+    protected ResponseEntity<Object> handleConflict( BusinessException ex ) {
         log.warn(ex.toString());
         return ResponseEntity.badRequest().body(List.of(ex.getMessage()));
     }

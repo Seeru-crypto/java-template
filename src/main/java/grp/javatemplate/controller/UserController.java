@@ -46,24 +46,4 @@ public class UserController {
         log.info("REST request to delete user " + userId);
         userService.delete(userId);
     }
-
-//    @PostMapping
-//    public OrderDto save( @Valid @RequestBody OrderDto orderDto ) {
-//        log.info("REST request to save order " + orderDto);
-//        return orderMapper.toDto(orderService.save(orderDto));
-//    }
-//
-//    @PutMapping
-//    public OrderDto update( @Valid @RequestBody OrderDto orderDto ) {
-//        log.info("REST request to update order " + orderDto);
-//        Order order = orderMapper.toEntity(orderDto);
-//        return orderMapper.toDto(orderService.update(order));
-//    }
-//
-//    @PutMapping(path = "/{orderId}")
-//    public OrderDto updateOrderStatus( @PathVariable Long orderId, @RequestParam String newStatus ) {
-//        log.info("REST request to update order status " + orderId);
-//        Order updatedOrder = orderService.updateOrderStatus(orderId, newStatus);
-//        return orderMapper.toDto(updatedOrder);
-//    }
 }
