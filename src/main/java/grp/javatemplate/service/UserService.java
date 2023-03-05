@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
-import static grp.javatemplate.exception.UserException.USER_EXISTS;
+import static grp.javatemplate.exception.UserException.*;
 
 @RequiredArgsConstructor
 @Service
@@ -30,146 +30,25 @@ public class UserService {
 
     public User save( UserDto userDto ) {
         if ( userRepository.existsByName(userDto.getName()) ) {
-            throw new UserException(USER_EXISTS);
+            throw new UserException(USER_DUPLICATE_NAME);
         }
         User user = userMapper.toEntity(userDto);
         return userRepository.save(user);
     }
 
     public User update( User user ) {
-        User existingUser = userRepository.findById(user.getId()).orElseThrow(() -> new UserException(USER_EXISTS));
+        if (!userRepository.existsById(user.getId())) {
+            throw new UserException(USER_DOES_NOT_EXIST);
+        }
+        User existingUser = userRepository.findById(user.getId()).orElseThrow(() -> new UserException(USER_DOES_NOT_EXIST));
         user.setCreatedAt(existingUser.getCreatedAt()).setCreatedBy(existingUser.getCreatedBy());
         return userRepository.save(user);
     }
 
     public void delete( Long id ) {
         if (!userRepository.existsById(id)) {
-            throw new UserException(USER_EXISTS);
+            throw new UserException(USER_DOES_NOT_EXIST);
         }
         userRepository.deleteById(id);
     }
-
-//    public Order save( OrderDto orderDto ) {
-//        if(orderRepository.existsByOrderNr(orderDto.getOrderNr())) {
-//            throw new OrderException(ORDER_NR_EXISTS);
-//        }
-//        Order order = new Order()
-//                .setOrderNr(orderDto.getOrderNr())
-//                .setPriority(orderDto.isPriority())
-//                .setStatus(OrderStatus.CREATED);
-//
-//        Set<Tag> orderTags = getTagDtos(orderDto.getTags());
-//
-//        List<OrderItem> orderItems = getOrderItems(orderDto.getOrderItems());
-//        orderRepository.save(order);
-//
-//        orderTags.forEach(order::addOrderTag);
-//        orderItems.forEach(order::addOrderItem);
-//        orderItemRepository.saveAll(orderItems);
-//        return order;
-//    }
-
-//    private Set<Tag> getTagDtos( Set<TagDto> toDos ) {
-//        Set<Tag> result = new HashSet<>();
-//        if(toDos.isEmpty()) {
-//            return result;
-//        }
-//
-//        for (TagDto tagDto : toDos) {
-//            result.add(tagService.findById(tagDto.getId()));
-//        }
-//        return result;
-//    }
-//
-//    private List<OrderItem> getOrderItems( List<OrderItemDto> orderItemDtos ) {
-//        List<OrderItem> orderItems = new ArrayList<>();
-//        for (OrderItemDto itemDto : orderItemDtos) {
-//            if(!productService.existsById(itemDto.getProductId())) {
-//                throw new OrderException(PRODUCT_DOES_NOT_EXIST);
-//            }
-//
-//            List<OrderItem> existingItem = orderItems.stream().filter(item -> Objects.equals(item.getProduct().getId(), itemDto.getProductId())).toList();
-//            if(!existingItem.isEmpty()) {
-//                throw new OrderException(ORDER_DUPLICATE_PRODUCT);
-//            }
-//
-//            Product product = productService.getById(itemDto.getProductId());
-//
-//            OrderItem orderItem = new OrderItem()
-//                    .setProduct(product)
-//                    .setAmount(itemDto.getAmount());
-//            orderItems.add(orderItem);
-//        }
-//        return orderItems;
-//    }
-//
-//    @Transactional
-//    public Order update( Order updatedOrder ) throws OrderException {
-//        Order originalOrder = orderRepository.findById(updatedOrder.getId())
-//                .orElseThrow(() -> new OrderException("given order does not exist"));
-//
-//        entityManager.detach(originalOrder);
-//        fuckOrderItems(updatedOrder.getOrderItems(), originalOrder);
-//
-//        originalOrder
-//                .setPriority(updatedOrder.isPriority())
-//                .setOrderNr(updatedOrder.getOrderNr())
-//                .setOrderTags(updatedOrder.getTags());
-//        return entityManager.merge(originalOrder);
-//    }
-//
-//    private void fuckOrderItems( List<OrderItem> updatedOrderItems, Order originalOrder ) {
-//        List<OrderItem> orderItems = new ArrayList<>(
-//                originalOrder.getOrderItems()
-//        );
-//        orderItems.removeAll(updatedOrderItems);
-//        for (OrderItem orderItem : orderItems) {
-//            originalOrder.removeOrderItem(orderItem);
-//        }
-//
-//        List<OrderItem> newComments = new ArrayList<>(updatedOrderItems);
-//        newComments.removeAll(originalOrder.getOrderItems());
-//        updatedOrderItems.removeAll(newComments);
-//
-//        for (OrderItem existingComment : updatedOrderItems) {
-//            existingComment.setOrder(originalOrder);
-//            OrderItem mergedComment = entityManager.merge(existingComment);
-//            originalOrder.getOrderItems()
-//                    .set(originalOrder.getOrderItems().indexOf(mergedComment), mergedComment);
-//        }
-//        for (OrderItem newComment : newComments) {
-//            originalOrder.addOrderItem(newComment);
-//        }
-//    }
-//
-//    public Order updateOrderStatus( Long orderId, String newStatus ) {
-//        Order existingOrder = orderRepository.findById(orderId).orElseThrow(() -> new OrderException(ORDER_DOES_NOT_EXIST));
-//
-//        OrderStatus currentOrderStatus = existingOrder.getStatus();
-//
-//        OrderStatus newOrderStatus;
-//        try {
-//            newOrderStatus = OrderStatus.valueOf(newStatus);
-//        } catch (IllegalArgumentException e) {
-//            throw new OrderException(ORDER_STATUS_DOES_NOT_EXIST);
-//        }
-//
-//        switch (newOrderStatus) {
-//            case ARCHIVED -> {
-//                if(!Objects.equals(currentOrderStatus, COMPLETED)) {
-//                    throw new OrderException(ORDER_CANNOT_BE_ARCHIVED);
-//                }
-//                // ToDo: When order_steps are implemented they should also be archived here!
-//                orderRepository.save(existingOrder.setStatus(ARCHIVED));
-//            }
-//            case COMPLETED -> {
-//                if(Objects.equals(currentOrderStatus, ARCHIVED)) {
-//                    throw new OrderException(ORDER_CANNOT_BE_COMPLETED);
-//                }
-//                orderRepository.save(existingOrder.setStatus(COMPLETED));
-//            }
-//            default -> throw new OrderException(ORDER_ERROR);
-//        }
-//        return existingOrder;
-//    }
 }
