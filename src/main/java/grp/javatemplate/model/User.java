@@ -40,9 +40,6 @@ public class User extends AbstractAuditingEntity<Long> {
     @Column
     private UserRole role;
 
-    @Column
-    private String password;
-
 //    @OneToMany(
 //            mappedBy = "flowStepId",
 //            cascade = CascadeType.ALL,

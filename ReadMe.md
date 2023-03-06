@@ -13,6 +13,7 @@ the following implementations are included:
 - Docker and Docker-compose examples
 - Automatic model auditing
 - REST exception handling
+- Swagger is included and can be accessed at http://localhost:8080/swagger-ui.html
 
 ## Usage
 

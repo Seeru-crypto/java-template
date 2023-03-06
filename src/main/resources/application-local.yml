@@ -5,7 +5,7 @@ spring:
       hibernate:
         format_sql: true
   datasource:
-    url: jdbc:postgresql://localhost:8881/DAS_DB
+    url: jdbc:postgresql://localhost:8881/DEFAULT_DB
 logging:
   level:
     root: info
