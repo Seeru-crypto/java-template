@@ -20,12 +20,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private static final String USER_NAME = "name";
+    private static final String USER_ID = "id";
 
     public List<User> findAll( String sortBy ) {
         if(Objects.equals(sortBy, USER_NAME)) {
             return userRepository.findAll(Sort.by(Sort.Direction.ASC, USER_NAME));
         }
-        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+        return userRepository.findAll(Sort.by(Sort.Direction.ASC, USER_ID));
     }
 
     public User save( UserDto userDto ) {

@@ -12,4 +12,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAll(Sort sort);
 
     boolean existsByName( String name );
+
+//    @Query("""
+//            SELECT CASE WHEN COUNT(f) > 0
+//            THEN TRUE else FALSE end
+//            FROM Flow f
+//            WHERE f.product.id = :productId
+//                                    """)
+//    boolean existsByProductId(Long productId);
 }

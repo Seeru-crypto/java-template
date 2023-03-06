@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -35,4 +39,36 @@ public class User extends AbstractAuditingEntity<Long> {
 
     @Column
     private UserRole role;
+
+    @Column
+    private String password;
+
+//    @OneToMany(
+//            mappedBy = "flowStepId",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true
+//    )
+//    private List<FlowStepStation> flowStepStations  = new ArrayList<>();
+//
+//    public FlowStep addFlowStation(FlowStepStation flowStepStation) {
+//        flowStepStations.add(flowStepStation);
+//        flowStepStation.setFlowStepId(this.getId());
+//        return this;
+//    }
+
+//    @ManyToMany(
+//            fetch = FetchType.EAGER
+//    )
+//    @JoinTable(name = "order_tag",
+//            joinColumns = @JoinColumn(name = "order_id"),
+//            inverseJoinColumns = @JoinColumn(name = "tag_id")
+//    )
+//    private Set<Tag> tags = new HashSet<>();
+
+//    @NotNull
+//    @OneToOne
+//    @JoinColumn(name = "type_id", referencedColumnName = "id")
+//    private StationType stationType;
+
+
 }

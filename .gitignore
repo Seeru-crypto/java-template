@@ -24,7 +24,7 @@ target/
 dist/
 
 # JetBrains IDE
-.idea/
+.idea
 
 # Unit test reports
 TEST*.xml
@@ -52,3 +52,4 @@ Thumbs.db
 build/
 /out/
 !/gradle/wrapper/gradle-wrapper.jar
+!/.idea/codeStyles/

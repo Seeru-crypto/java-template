@@ -10,6 +10,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication
 public class JavaTemplateApplication {
 
+	// TODO: Add Swagger support with authentication
+	// TODO: Add example of a custom SQL repository function.
+	// TODO: What options are there for user authentication?
+	// TODO: Should a basic code style be enforced?
+	// TODO: Should flyway be used or leave DB schema generation to hibernate?
 	public static void main(String[] args) {
 		SpringApplication.run(JavaTemplateApplication.class, args);
 	}
