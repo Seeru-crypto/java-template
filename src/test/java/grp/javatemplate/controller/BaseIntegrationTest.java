@@ -3,6 +3,7 @@ package grp.javatemplate.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import grp.javatemplate.JavaTemplateApplication;
+import grp.javatemplate.config.EndpointProperties;
 import grp.javatemplate.controller.dto.UserDto;
 import grp.javatemplate.mapper.UserMapper;
 import jakarta.persistence.EntityManager;
@@ -34,6 +35,9 @@ import static grp.javatemplate.TestObjects.clear;
 public abstract class BaseIntegrationTest {
     @Autowired
     protected ObjectMapper objectMapper;
+
+    @Autowired
+    EndpointProperties endpointProperties;
 
     @Autowired
     protected UserMapper userMapper;

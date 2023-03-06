@@ -1,5 +1,6 @@
 package grp.javatemplate.model;
 
+import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 import grp.javatemplate.model.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -8,12 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import static jakarta.persistence.EnumType.STRING;
 
 @Getter
 @Setter
@@ -37,7 +37,9 @@ public class User extends AbstractAuditingEntity<Long> {
     @Column
     private Instant dob;
 
-    @Column
+    @Column(columnDefinition = "user_role")
+    @Enumerated(STRING)
+    @Type(PostgreSQLEnumType.class)
     private UserRole role;
 
 //    @OneToMany(

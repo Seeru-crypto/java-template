@@ -35,6 +35,7 @@ dependencies {
 	testImplementation 'org.testcontainers:junit-jupiter:1.17.4'
 	testImplementation 'org.testcontainers:postgresql:1.17.4'
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.0.0'
+	implementation group: 'com.vladmihalcea', name: 'hibernate-types-60', version: '2.21.1'
 }
 
 tasks.named('test') {

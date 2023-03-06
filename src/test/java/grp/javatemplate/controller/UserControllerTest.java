@@ -10,6 +10,7 @@ import java.util.List;
 
 import static grp.javatemplate.TestObjects.createUser;
 import static grp.javatemplate.TestObjects.createUserDto;
+import static grp.javatemplate.exception.BusinessException.ID_MUST_NOT_BE_NULL;
 import static grp.javatemplate.exception.UserException.USER_DOES_NOT_EXIST;
 import static grp.javatemplate.exception.UserException.USER_DUPLICATE_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,7 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Transactional
 class UserControllerTest extends BaseIntegrationTest {
-    private static final String API_PATH = "/users";
 
     // GET tests
     @Test
@@ -32,7 +32,7 @@ class UserControllerTest extends BaseIntegrationTest {
         User firstUser = createUser().setName("Alice");
         entityManager.persist(firstUser);
 
-        mockMvc.perform(get(API_PATH))
+        mockMvc.perform(get(endpointProperties.getUsers()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
@@ -47,7 +47,7 @@ class UserControllerTest extends BaseIntegrationTest {
         User firstUser = createUser().setName("Alice");
         entityManager.persist(firstUser);
 
-        mockMvc.perform(get(API_PATH + "?sortBy=name"))
+        mockMvc.perform(get(endpointProperties.getUsers() + "?sortBy=name"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
@@ -60,7 +60,7 @@ class UserControllerTest extends BaseIntegrationTest {
         UserDto userDto = createUserDto().setName("Alice");
         byte[] bytes = getBytes(userDto);
 
-        mockMvc.perform(post(API_PATH)
+        mockMvc.perform(post(endpointProperties.getUsers())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bytes))
                 .andDo(print())
@@ -77,7 +77,7 @@ class UserControllerTest extends BaseIntegrationTest {
         UserDto userDto = createUserDto().setName("Alice");
         byte[] bytes = getBytes(userDto);
 
-        mockMvc.perform(post(API_PATH)
+        mockMvc.perform(post(endpointProperties.getUsers())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bytes))
                 .andDo(print())
@@ -94,7 +94,7 @@ class UserControllerTest extends BaseIntegrationTest {
         UserDto userDto = userMapper.toDto(user).setName("Bob");
         byte[] bytes = getBytes(userDto);
 
-        mockMvc.perform(put(API_PATH)
+        mockMvc.perform(put(endpointProperties.getUsers())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bytes))
                 .andDo(print())
@@ -110,11 +110,10 @@ class UserControllerTest extends BaseIntegrationTest {
 
     @Test
     void update_shouldReturn404IfUserNotFound() throws Exception {
-        UserDto userDto = createUserDto().setName("Bob");
+        UserDto userDto = createUserDto().setName("Bob").setId(1L);
         byte[] bytes = getBytes(userDto);
 
-        // TODO: API does not handle value not found exception
-        mockMvc.perform(put(API_PATH)
+        mockMvc.perform(put(endpointProperties.getUsers())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bytes))
                 .andDo(print())
@@ -122,13 +121,27 @@ class UserControllerTest extends BaseIntegrationTest {
                 .andExpect(jsonPath("$[0]").value(USER_DOES_NOT_EXIST));
     }
 
+    @Test
+    void update_shouldReturn400IfUserIdIsNull() throws Exception {
+        UserDto userDto = createUserDto().setName("Alice");
+        byte[] bytes = getBytes(userDto);
+
+        mockMvc.perform(put(endpointProperties.getUsers())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(bytes))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0]").value(ID_MUST_NOT_BE_NULL));
+    }
+
+
     // DELETE tests
     @Test
     void delete_shouldDeleteUser() throws Exception {
         User user = createUser().setName("Alice");
         entityManager.persist(user);
 
-        mockMvc.perform(delete(API_PATH + "/" + user.getId()))
+        mockMvc.perform(delete(endpointProperties.getUsers() + "/" + user.getId()))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -138,7 +151,7 @@ class UserControllerTest extends BaseIntegrationTest {
 
     @Test
     void delete_shouldReturn404IfUserNotFound() throws Exception {
-        mockMvc.perform(delete(API_PATH + "/1"))
+        mockMvc.perform(delete(endpointProperties.getUsers() + "/1"))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value(USER_DOES_NOT_EXIST));

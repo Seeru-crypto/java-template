@@ -6,5 +6,5 @@ spring:
     password: "root"
 server:
   port: 8880
-ENDPOINT:
-  USER: "/users"
+endpoint:
+  users: /users

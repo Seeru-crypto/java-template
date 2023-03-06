@@ -15,10 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-// TODO: Add endpoint to application.properties
-// https://www.baeldung.com/spring-requestmapping-properties-file
-@RequestMapping( path="${ENDPOINT.USER}")
-//@RequestMapping(path = "/users")
+@RequestMapping( path="${endpoint.users}")
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;

@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: integration-test
   jpa:
     show-sql: true
     properties:
@@ -9,3 +11,7 @@ spring:
     url: jdbc:tc:postgresql:15.0:///DAS_DB?TC_TMPFS=/testtmpfs:rw
     username: root
 corsAllowedOrigin: http://localhost:3000
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
