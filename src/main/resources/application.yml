@@ -1,7 +1,29 @@
 spring:
+  application:
+    name: java-template
   profiles:
     active: local
+    security:
+      oauth2:
+        resourceserver:
+          jwt:
+            issuer-uri: http://localhost:9080/realms/test
+            jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+jwt:
+  auth:
+    converter:
+      resource-id: first_client
+      principal-attribute: preferred_username
+
+logging:
+  level:
+    org.springframework.security: DEBUG
 server:
   port: 8880
 endpoint:
   users: /users
+
+#keycloak:
+#  realm: test
+#  resource: javatemplate
+#  public-client: true

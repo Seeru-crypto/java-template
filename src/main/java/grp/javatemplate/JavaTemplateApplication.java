@@ -21,6 +21,7 @@ public class JavaTemplateApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		log.info("Swagger enabled at http://localhost:8880/swagger-ui/index.html#/");
+		log.info("Keycloak hosted at http://localhost:9080/keycloak/");
 	}
 
 	@Value("${corsAllowedOrigin}")
