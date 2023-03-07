@@ -1,9 +1,6 @@
 spring:
   profiles:
-    active: "local"
-  datasource:
-    username: "root"
-    password: "root"
+    active: local
 server:
   port: 8880
 endpoint:

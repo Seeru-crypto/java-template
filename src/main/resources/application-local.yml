@@ -6,6 +6,8 @@ spring:
         format_sql: true
   datasource:
     url: jdbc:postgresql://localhost:8881/DEFAULT_DB
+    username: "root"
+    password: "root"
 logging:
   level:
     root: info

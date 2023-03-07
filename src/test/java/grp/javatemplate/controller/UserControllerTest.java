@@ -16,7 +16,6 @@ import static grp.javatemplate.exception.UserException.USER_DUPLICATE_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,7 +32,6 @@ class UserControllerTest extends BaseIntegrationTest {
         entityManager.persist(firstUser);
 
         mockMvc.perform(get(endpointProperties.getUsers()))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].name").value("Bob"));
@@ -48,7 +46,6 @@ class UserControllerTest extends BaseIntegrationTest {
         entityManager.persist(firstUser);
 
         mockMvc.perform(get(endpointProperties.getUsers() + "?sortBy=name"))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].name").value("Alice"));
@@ -63,7 +60,6 @@ class UserControllerTest extends BaseIntegrationTest {
         mockMvc.perform(post(endpointProperties.getUsers())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bytes))
-                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("Alice"))
                 .andExpect(jsonPath("$.dob").value(userDto.getDob().toString()));
@@ -80,7 +76,6 @@ class UserControllerTest extends BaseIntegrationTest {
         mockMvc.perform(post(endpointProperties.getUsers())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bytes))
-                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value(USER_DUPLICATE_NAME));
     }
@@ -97,7 +92,6 @@ class UserControllerTest extends BaseIntegrationTest {
         mockMvc.perform(put(endpointProperties.getUsers())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bytes))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Bob"));
 
@@ -116,7 +110,6 @@ class UserControllerTest extends BaseIntegrationTest {
         mockMvc.perform(put(endpointProperties.getUsers())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bytes))
-                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value(USER_DOES_NOT_EXIST));
     }
@@ -129,7 +122,6 @@ class UserControllerTest extends BaseIntegrationTest {
         mockMvc.perform(put(endpointProperties.getUsers())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bytes))
-                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value(ID_MUST_NOT_BE_NULL));
     }
@@ -142,7 +134,6 @@ class UserControllerTest extends BaseIntegrationTest {
         entityManager.persist(user);
 
         mockMvc.perform(delete(endpointProperties.getUsers() + "/" + user.getId()))
-                .andDo(print())
                 .andExpect(status().isOk());
 
         List<User> createdUsers = findAll(User.class);
@@ -152,7 +143,6 @@ class UserControllerTest extends BaseIntegrationTest {
     @Test
     void delete_shouldReturn404IfUserNotFound() throws Exception {
         mockMvc.perform(delete(endpointProperties.getUsers() + "/1"))
-                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value(USER_DOES_NOT_EXIST));
     }

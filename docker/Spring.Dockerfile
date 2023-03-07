@@ -7,4 +7,5 @@ ENV SPRING_DB_PATH = ${SPRING_DB_PATH}
 
 ARG JAR_FILE=build/libs/\*.jar
 COPY ${JAR_FILE} app.jar
+
 ENTRYPOINT ["java", "-Dspring.profiles.active=test","-jar","/app.jar"]

@@ -6,19 +6,22 @@ services:
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=DEFAULT_DB
+      - POSTGRES_DB=default_db
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - 8881:5432
     networks:
       - DEFAULT_NETWORK
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   spring-api:
     build:
-      context: ./
+      context: ../
+      dockerfile: ./docker/Spring.Dockerfile
       args:
-        SPRING_DB_PATH: db:5432/DEFAULT_DB
+        SPRING_DB_PATH: db:5432/default_db
     environment:
-      'spring.datasource.url': jdbc:postgresql://db:5432/DEFAULT_DB
+      'spring.datasource.url': jdbc:postgresql://db:5432/default_db
       'corsAllowedOrigin': http://178.62.235.154:3000
     ports:
       - "8880:8880"
@@ -28,5 +31,18 @@ services:
       - db
     networks:
       - DEFAULT_NETWORK
+  keycloak:
+    build:
+      context: ./
+      dockerfile: Keycloak.Dockerfile
+    container_name: keycloak
+    ports:
+      - "127.0.0.1:9080:9080"
+      - "127.0.0.1:9443:9443"
+    depends_on:
+      - db
+    networks:
+      - DEFAULT_NETWORK
+
 networks:
   DEFAULT_NETWORK:

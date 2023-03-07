@@ -12,8 +12,8 @@ public class UserDto {
     private Long id;
 
     @NotNull
-    @Size(min = 2, message = "{validation.name.size.too_short}")
-    @Size(max = 200, message = "{validation.name.size.too_long}")
+    @Size(min = 2)
+    @Size(max = 200)
     private String name;
 
     private UserRole role;
