@@ -26,6 +26,10 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
 
+    // functions to implement
+    // 2. User can logout, invalidating the token
+    // 3. endpoints with different roles can be accessed with the token
+
     @GetMapping
     public List<UserDto> findAll( @RequestParam(required = false) String sortBy ) {
         log.info("REST request to findAll users");
@@ -59,11 +63,6 @@ public class UserController {
         return "/";
     }
 
-    @GetMapping("/anonymous")
-    public ResponseEntity<String> getAnonymous() {
-        return ResponseEntity.ok("Hello Anonymous");
-    }
-
     @GetMapping("/admin")
     public ResponseEntity<String> getAdmin(Principal principal) {
         JwtAuthenticationToken token = (JwtAuthenticationToken) principal;
@@ -85,4 +84,7 @@ public class UserController {
     public String getAccessToken(JwtAuthenticationToken auth) {
         return auth.getToken().getTokenValue();
     }
+
+    // TODO: https://github.com/ch4mpy/spring-addons/tree/master/samples/tutorials
+
 }

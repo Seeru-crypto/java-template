@@ -53,3 +53,4 @@ build/
 /out/
 !/gradle/wrapper/gradle-wrapper.jar
 !/.idea/codeStyles/
+!/exampleRequests.http

@@ -30,10 +30,9 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET, "/users/anonymous", "/users/anonymous/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/v3/**").permitAll()
                 .requestMatchers(HttpMethod.GET, usersPath).permitAll()
-                .requestMatchers(HttpMethod.GET, usersPath+"/user").hasAnyRole(regular, admin)
                 .requestMatchers(HttpMethod.POST, usersPath).hasAnyRole(regular, admin)
                 .requestMatchers(HttpMethod.PUT, usersPath).hasAnyRole(regular, admin)
                 .requestMatchers(HttpMethod.DELETE, usersPath).hasRole(admin)

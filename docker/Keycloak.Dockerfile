@@ -22,5 +22,4 @@ ENV KC_HTTP_RELATIVE_PATH=keycloak
 EXPOSE 9080
 EXPOSE 9443
 
-#ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start-dev --import-realm"]
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start-dev"]
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start-dev --import-realm"]
