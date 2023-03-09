@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-@RequestMapping( path="${endpoint.users}")
+@RequestMapping(path = "${endpoint.users}")
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
@@ -31,28 +31,28 @@ public class UserController {
     // 3. endpoints with different roles can be accessed with the token
 
     @GetMapping
-    public List<UserDto> findAll( @RequestParam(required = false) String sortBy ) {
+    public List<UserDto> findAll(@RequestParam(required = false) String sortBy) {
         log.info("REST request to findAll users");
         List<User> res = userService.findAll(sortBy);
         return userMapper.toDto(res);
     }
-
+//TODO: For some reason data from request body is not transferred!
     @PostMapping
-    public UserDto save( @Valid @RequestBody UserDto userDto, HttpServletResponse response ) {
+    public UserDto save(@Valid @RequestBody UserDto userDto, HttpServletResponse response) {
         log.info("REST request to save user " + userDto);
         response.setStatus(HttpServletResponse.SC_CREATED);
         return userMapper.toDto(userService.save(userDto));
     }
 
     @PutMapping
-    public UserDto update( @Valid @RequestBody UserDto userDto ) {
+    public UserDto update(@Valid @RequestBody UserDto userDto) {
         log.info("REST request to update user " + userDto);
         User user = userMapper.toEntity(userDto);
         return userMapper.toDto(userService.update(user));
     }
 
     @DeleteMapping(path = "/{userId}")
-    public void delete( @PathVariable Long userId ) {
+    public void delete(@PathVariable Long userId) {
         log.info("REST request to delete user " + userId);
         userService.delete(userId);
     }

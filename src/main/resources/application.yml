@@ -14,7 +14,6 @@ jwt:
     converter:
       resource-id: first_client
       principal-attribute: preferred_username
-
 logging:
   level:
     org.springframework.security: DEBUG
@@ -24,8 +23,3 @@ server:
     context-path: /api
 endpoint:
   users: /users
-
-#keycloak:
-#  realm: test
-#  resource: javatemplate
-#  public-client: true

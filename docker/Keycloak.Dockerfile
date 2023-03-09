@@ -2,7 +2,6 @@ FROM quay.io/keycloak/keycloak:20.0.2
 
 WORKDIR /opt/keycloak
 
-COPY themes themes
 COPY realm-config data/import
 
 ENV KC_HEALTH_ENABLED=true
