@@ -3,6 +3,7 @@ package grp.javatemplate.model;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 import grp.javatemplate.model.enums.UserRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import org.hibernate.annotations.Type;
 
 import java.time.Instant;
 
+import static grp.javatemplate.exception.UserException.INVALID_USER_EMAIL;
 import static jakarta.persistence.EnumType.STRING;
 
 @Getter
@@ -22,6 +24,8 @@ import static jakarta.persistence.EnumType.STRING;
 @Entity
 @Table(name = "\"user\"")
 public class User extends AbstractAuditingEntity<Long> {
+    public static final int MAX_EMAIL_LEN = 35;
+    public static final String EMAIL_REGEX = "^[\\w!#$%&’*+\\/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+\\/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +45,11 @@ public class User extends AbstractAuditingEntity<Long> {
     @Enumerated(STRING)
     @Type(PostgreSQLEnumType.class)
     private UserRole role;
+
+    @Column
+    @Size(max = MAX_EMAIL_LEN, message = "Email is too long")
+    @Email(message = INVALID_USER_EMAIL, regexp = EMAIL_REGEX)
+    private String email;
 
 //    @OneToMany(
 //            mappedBy = "flowStepId",

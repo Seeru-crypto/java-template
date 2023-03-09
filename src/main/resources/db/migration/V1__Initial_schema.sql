@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS public."user"
 (
     id          BIGSERIAL NOT NULL,
     name        CHARACTER VARYING COLLATE pg_catalog."default",
+    email       VARCHAR,
     role        user_role,
     dob         TIMESTAMP,
     created_by  TEXT,

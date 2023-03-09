@@ -126,7 +126,6 @@ class UserControllerTest extends BaseIntegrationTest {
                 .andExpect(jsonPath("$[0]").value(ID_MUST_NOT_BE_NULL));
     }
 
-
     // DELETE tests
     @Test
     void delete_shouldDeleteUser() throws Exception {
@@ -146,4 +145,7 @@ class UserControllerTest extends BaseIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value(USER_DOES_NOT_EXIST));
     }
+
+    // TODO: Add email regex parameterized test
+    // https://www.baeldung.com/parameterized-tests-junit-5
 }

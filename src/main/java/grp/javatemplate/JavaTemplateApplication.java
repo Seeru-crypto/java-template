@@ -13,7 +13,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Slf4j
 public class JavaTemplateApplication implements CommandLineRunner {
 
-	// TODO: What options are there for user authentication?
 	public static void main(String[] args) {
 		SpringApplication.run(JavaTemplateApplication.class, args);
 	}

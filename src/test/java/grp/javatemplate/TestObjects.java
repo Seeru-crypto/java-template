@@ -11,9 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestObjects {
-    private static final boolean ORDER_PRIORITY = false;
-    public static final String ORDER_NUMBER = "NR ABC";
     public static final String USER_NAME = "Alice";
+    public static final String USER_EMAIL = "email@gmail.com";
     public static final String USER_NAME_2 = "Bob";
 
     private static final List<Object> createdEntities = new ArrayList<>();
@@ -28,6 +27,7 @@ public class TestObjects {
     public static User createUser() {
         return new User()
                 .setName(USER_NAME_2)
+                .setEmail(USER_EMAIL)
                 .setRole(UserRole.REGULAR)
                 .setDob(Instant.now().minus(16L, java.time.temporal.ChronoUnit.DAYS));
     }
