@@ -5,6 +5,7 @@ import grp.javatemplate.model.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import org.hibernate.annotations.Type;
 import java.time.Instant;
 
 import static grp.javatemplate.exception.UserException.INVALID_USER_EMAIL;
+import static grp.javatemplate.exception.UserException.INVALID_USER_PHONE_NUMBER;
 import static jakarta.persistence.EnumType.STRING;
 
 @Getter
@@ -26,6 +28,7 @@ import static jakarta.persistence.EnumType.STRING;
 public class User extends AbstractAuditingEntity<Long> {
     public static final int MAX_EMAIL_LEN = 35;
     public static final String EMAIL_REGEX = "^[\\w!#$%&’*+\\/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+\\/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+    public static final String PHONE_NR_REGEX = "\\+[0-9]{1,3} [0-9]{7,10}";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,8 +51,12 @@ public class User extends AbstractAuditingEntity<Long> {
 
     @Column
     @Size(max = MAX_EMAIL_LEN, message = "Email is too long")
-    @Email(message = INVALID_USER_EMAIL, regexp = EMAIL_REGEX)
+    @Email(regexp = EMAIL_REGEX, message = INVALID_USER_EMAIL)
     private String email;
+
+    @Column(name = "phone_number")
+    @Pattern(regexp = PHONE_NR_REGEX, message = INVALID_USER_PHONE_NUMBER)
+    private String phoneNumber;
 
 //    @OneToMany(
 //            mappedBy = "flowStepId",

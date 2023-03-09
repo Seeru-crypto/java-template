@@ -20,6 +20,7 @@ public class TestObjects {
     public static UserDto createUserDto() {
         return new UserDto()
                 .setName(USER_NAME)
+                .setEmail(USER_EMAIL)
                 .setRole(UserRole.REGULAR)
                 .setDob(Instant.now().truncatedTo( ChronoUnit.MICROS ));
     }

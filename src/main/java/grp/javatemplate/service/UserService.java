@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static grp.javatemplate.exception.UserException.*;
+import static grp.javatemplate.model.User.EMAIL_REGEX;
+import static grp.javatemplate.model.User.PHONE_NR_REGEX;
 
 @RequiredArgsConstructor
 @Service
@@ -51,5 +53,19 @@ public class UserService {
             throw new UserException(USER_DOES_NOT_EXIST);
         }
         userRepository.deleteById(id);
+    }
+
+    public boolean isEmailValid(String email) {
+        if (email == null) {
+            return true;
+        }
+        return email.matches(EMAIL_REGEX);
+    }
+
+    public boolean isPhoneNumberValid(String phoneNumber) {
+        if (phoneNumber == null) {
+            return true;
+        }
+        return phoneNumber.matches(PHONE_NR_REGEX);
     }
 }

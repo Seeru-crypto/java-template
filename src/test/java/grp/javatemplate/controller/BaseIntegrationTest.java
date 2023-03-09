@@ -6,6 +6,7 @@ import grp.javatemplate.JavaTemplateApplication;
 import grp.javatemplate.config.EndpointProperties;
 import grp.javatemplate.controller.dto.UserDto;
 import grp.javatemplate.mapper.UserMapper;
+import grp.javatemplate.service.UserService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -35,6 +36,9 @@ import static grp.javatemplate.TestObjects.clear;
 public abstract class BaseIntegrationTest {
     @Autowired
     protected ObjectMapper objectMapper;
+
+    @Autowired
+    protected UserService userService;
 
     @Autowired
     EndpointProperties endpointProperties;

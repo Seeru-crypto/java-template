@@ -145,7 +145,4 @@ class UserControllerTest extends BaseIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value(USER_DOES_NOT_EXIST));
     }
-
-    // TODO: Add email regex parameterized test
-    // https://www.baeldung.com/parameterized-tests-junit-5
 }
