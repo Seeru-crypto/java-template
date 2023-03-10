@@ -40,9 +40,6 @@ public class UserService {
     }
 
     public User update( User user ) {
-        if (!userRepository.existsById(user.getId())) {
-            throw new UserException(USER_DOES_NOT_EXIST);
-        }
         User existingUser = userRepository.findById(user.getId()).orElseThrow(() -> new UserException(USER_DOES_NOT_EXIST));
         user.setCreatedAt(existingUser.getCreatedAt()).setCreatedBy(existingUser.getCreatedBy());
         return userRepository.save(user);

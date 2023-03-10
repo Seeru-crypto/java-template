@@ -6,7 +6,6 @@ import grp.javatemplate.model.User;
 import grp.javatemplate.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +14,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.security.Principal;
 import java.util.List;
+
+import static org.springframework.http.ResponseEntity.created;
 
 @RequiredArgsConstructor
 @RestController
@@ -36,12 +38,13 @@ public class UserController {
         List<User> res = userService.findAll(sortBy);
         return userMapper.toDto(res);
     }
-//TODO: For some reason data from request body is not transferred!
+
+    //TODO: Vii meetodite tagastus funktsioon kujule ResponseEntity<UserDto> ja muuda ka testid
     @PostMapping
-    public UserDto save(@Valid @RequestBody UserDto userDto, HttpServletResponse response) {
+    public ResponseEntity<UserDto> save(@Valid @RequestBody UserDto userDto) {
         log.info("REST request to save user " + userDto);
-        response.setStatus(HttpServletResponse.SC_CREATED);
-        return userMapper.toDto(userService.save(userDto));
+        UserDto createdUser = userMapper.toDto(userService.save(userDto));
+        return created(URI.create("/api/users/%s".formatted(createdUser.getId()))).body(createdUser);
     }
 
     @PutMapping
@@ -84,7 +87,5 @@ public class UserController {
     public String getAccessToken(JwtAuthenticationToken auth) {
         return auth.getToken().getTokenValue();
     }
-
     // TODO: https://github.com/ch4mpy/spring-addons/tree/master/samples/tutorials
-
 }

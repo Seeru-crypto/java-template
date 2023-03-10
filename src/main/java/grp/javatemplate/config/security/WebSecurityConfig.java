@@ -4,15 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static grp.javatemplate.model.enums.UserRole.ADMIN;
 import static grp.javatemplate.model.enums.UserRole.REGULAR;
+import static org.springframework.http.HttpMethod.*;
 
 @RequiredArgsConstructor
 @Configuration
@@ -22,7 +21,8 @@ public class WebSecurityConfig {
     @Value("${endpoint.users}")
     String usersPath;
 
-    String admin = ADMIN.toString();
+//    String admin = ADMIN.toString();
+    String admin = "app_admin";
     String regular = REGULAR.toString();
 
     private final JwtAuthConverter jwtAuthConverter;
@@ -30,12 +30,12 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET, "/users/user").hasAnyRole(regular, admin)
-                .requestMatchers(HttpMethod.GET, "/users/admin").hasRole(admin)
-                .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/v3/**").permitAll()
-                .requestMatchers(HttpMethod.POST, usersPath).hasAnyRole(regular, admin)
-                .requestMatchers(HttpMethod.PUT, usersPath).hasAnyRole(regular, admin)
-                .requestMatchers(HttpMethod.DELETE, usersPath).hasRole(admin)
+                .requestMatchers(GET, "/users/user").hasAnyRole(regular, admin)
+                .requestMatchers(GET, usersPath+"/admin").hasRole(admin)
+                .requestMatchers(GET, "/swagger-ui/**", "/v3/**").permitAll()
+                .requestMatchers(POST, usersPath).hasAnyRole(regular, admin)
+                .requestMatchers(PUT, usersPath).hasAnyRole(regular, admin)
+                .requestMatchers(DELETE, usersPath).hasRole(admin)
                 .anyRequest().authenticated();
         http.oauth2ResourceServer()
                 .jwt()
