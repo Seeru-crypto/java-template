@@ -47,7 +47,7 @@ public class User extends AbstractAuditingEntity<Long> {
     @Column(columnDefinition = "user_role")
     @Enumerated(STRING)
     @Type(PostgreSQLEnumType.class)
-    private UserRole role;
+    private String role;
 
     @Column
     @Size(max = MAX_EMAIL_LEN, message = "Email is too long")
@@ -57,7 +57,6 @@ public class User extends AbstractAuditingEntity<Long> {
     @Column(name = "phone_number")
     @Pattern(regexp = PHONE_NR_REGEX, message = INVALID_USER_PHONE_NUMBER)
     private String phoneNumber;
-
 //    @OneToMany(
 //            mappedBy = "flowStepId",
 //            cascade = CascadeType.ALL,

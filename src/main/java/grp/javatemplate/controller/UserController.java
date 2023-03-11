@@ -1,5 +1,6 @@
 package grp.javatemplate.controller;
 
+import grp.javatemplate.config.security.RoleConstants;
 import grp.javatemplate.controller.dto.UserDto;
 import grp.javatemplate.mapper.UserMapper;
 import grp.javatemplate.model.User;
@@ -28,18 +29,13 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
 
-    // functions to implement
-    // 2. User can logout, invalidating the token
-    // 3. endpoints with different roles can be accessed with the token
-
     @GetMapping
-    public List<UserDto> findAll(@RequestParam(required = false) String sortBy) {
+    public  ResponseEntity<List<UserDto>> findAll(@RequestParam(required = false) String sortBy) {
         log.info("REST request to findAll users");
         List<User> res = userService.findAll(sortBy);
-        return userMapper.toDto(res);
+        return ResponseEntity.ok(userMapper.toDto(res));
     }
 
-    //TODO: Vii meetodite tagastus funktsioon kujule ResponseEntity<UserDto> ja muuda ka testid
     @PostMapping
     public ResponseEntity<UserDto> save(@Valid @RequestBody UserDto userDto) {
         log.info("REST request to save user " + userDto);
@@ -48,13 +44,14 @@ public class UserController {
     }
 
     @PutMapping
-    public UserDto update(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> update(@Valid @RequestBody UserDto userDto) {
         log.info("REST request to update user " + userDto);
         User user = userMapper.toEntity(userDto);
-        return userMapper.toDto(userService.update(user));
+        return ResponseEntity.ok(userMapper.toDto(userService.update(user)));
     }
 
     @DeleteMapping(path = "/{userId}")
+    @PreAuthorize("hasAuthority(\"" + RoleConstants.ROLE_ADMIN + "\")")
     public void delete(@PathVariable Long userId) {
         log.info("REST request to delete user " + userId);
         userService.delete(userId);
@@ -66,26 +63,14 @@ public class UserController {
         return "/";
     }
 
-    @GetMapping("/admin")
-    public ResponseEntity<String> getAdmin(Principal principal) {
-        JwtAuthenticationToken token = (JwtAuthenticationToken) principal;
-        String userName = (String) token.getTokenAttributes().get("name");
-        String userEmail = (String) token.getTokenAttributes().get("email");
-        return ResponseEntity.ok("Hello Admin \nUser Name : " + userName + "\nUser Email : " + userEmail);
-    }
-
-    @GetMapping("/user")
-    public ResponseEntity<String> getUser(Principal principal) {
-        JwtAuthenticationToken token = (JwtAuthenticationToken) principal;
-        String userName = (String) token.getTokenAttributes().get("name");
-        String userEmail = (String) token.getTokenAttributes().get("email");
-        return ResponseEntity.ok("Hello User \nUser Name : " + userName + "\nUser Email : " + userEmail);
-    }
-
     @GetMapping("/access-token")
-    @PreAuthorize("isAuthenticated()")
-    public String getAccessToken(JwtAuthenticationToken auth) {
-        return auth.getToken().getTokenValue();
+    public ResponseEntity<String> getAccessToken(JwtAuthenticationToken token) {
+        boolean isAuthenticated = token.isAuthenticated();
+        if (isAuthenticated) {
+            return ResponseEntity.ok("Authenticated");
+        } else {
+            return ResponseEntity.ok("Not authenticated");
+        }
     }
     // TODO: https://github.com/ch4mpy/spring-addons/tree/master/samples/tutorials
 }

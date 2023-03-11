@@ -10,7 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static grp.javatemplate.model.enums.UserRole.REGULAR;
+import static grp.javatemplate.config.security.RoleConstants.ROLE_ADMIN;
+import static grp.javatemplate.config.security.RoleConstants.ROLE_REGULAR;
 import static org.springframework.http.HttpMethod.*;
 
 @RequiredArgsConstructor
@@ -20,22 +21,16 @@ import static org.springframework.http.HttpMethod.*;
 public class WebSecurityConfig {
     @Value("${endpoint.users}")
     String usersPath;
-
-//    String admin = ADMIN.toString();
-    String admin = "app_admin";
-    String regular = REGULAR.toString();
-
     private final JwtAuthConverter jwtAuthConverter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests()
-                .requestMatchers(GET, "/users/user").hasAnyRole(regular, admin)
-                .requestMatchers(GET, usersPath+"/admin").hasRole(admin)
+                .requestMatchers(GET, usersPath).authenticated()
+                .requestMatchers(POST, usersPath).hasAnyRole(ROLE_REGULAR, ROLE_ADMIN)
+                .requestMatchers(PUT, usersPath).hasAnyRole(ROLE_REGULAR, ROLE_ADMIN)
+                .requestMatchers(DELETE, usersPath).hasRole(ROLE_ADMIN)
                 .requestMatchers(GET, "/swagger-ui/**", "/v3/**").permitAll()
-                .requestMatchers(POST, usersPath).hasAnyRole(regular, admin)
-                .requestMatchers(PUT, usersPath).hasAnyRole(regular, admin)
-                .requestMatchers(DELETE, usersPath).hasRole(admin)
                 .anyRequest().authenticated();
         http.oauth2ResourceServer()
                 .jwt()
