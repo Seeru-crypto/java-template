@@ -14,6 +14,7 @@ the following implementations are included:
 - Automatic model auditing
 - REST exception handling
 - Swagger
+- Example of GitHub actions CI/CD pipeline
 
 ## Usage
 
@@ -34,5 +35,3 @@ git branch -D main
 git branch -m main
 git push -f origin main
 ```
-
-a change!
