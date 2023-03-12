@@ -1,6 +1,6 @@
 package grp.javatemplate.controller.dto;
 
-import grp.javatemplate.model.enums.UserRole;
+import grp.javatemplate.model.enums.UserRole.Roles;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -22,7 +22,7 @@ public class UserDto {
     @Size(max = 200)
     private String name;
 
-    private UserRole role;
+    private Roles role;
 
     private Instant dob;
 

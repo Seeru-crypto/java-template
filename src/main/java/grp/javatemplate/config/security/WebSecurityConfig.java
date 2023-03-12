@@ -10,8 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static grp.javatemplate.config.security.RoleConstants.ROLE_ADMIN;
-import static grp.javatemplate.config.security.RoleConstants.ROLE_REGULAR;
+import static grp.javatemplate.model.enums.UserRole.ROLE_ADMIN;
+import static grp.javatemplate.model.enums.UserRole.ROLE_REGULAR;
 import static org.springframework.http.HttpMethod.*;
 
 @RequiredArgsConstructor
@@ -22,14 +22,15 @@ public class WebSecurityConfig {
     @Value("${endpoint.users}")
     String usersPath;
     private final JwtAuthConverter jwtAuthConverter;
+    private static final String PATH_WILDCARD = "/**";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests()
                 .requestMatchers(GET, usersPath).authenticated()
                 .requestMatchers(POST, usersPath).hasAnyRole(ROLE_REGULAR, ROLE_ADMIN)
-                .requestMatchers(PUT, usersPath).hasAnyRole(ROLE_REGULAR, ROLE_ADMIN)
-                .requestMatchers(DELETE, usersPath).hasRole(ROLE_ADMIN)
+                .requestMatchers(PUT, usersPath, usersPath + PATH_WILDCARD).hasAnyRole(ROLE_REGULAR, ROLE_ADMIN)
+                .requestMatchers(DELETE, usersPath, usersPath + PATH_WILDCARD).hasRole(ROLE_ADMIN)
                 .requestMatchers(GET, "/swagger-ui/**", "/v3/**").permitAll()
                 .anyRequest().authenticated();
         http.oauth2ResourceServer()

@@ -1,7 +1,7 @@
 package grp.javatemplate.model;
 
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
-import grp.javatemplate.model.enums.UserRole;
+import grp.javatemplate.model.enums.UserRole.Roles;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -47,7 +47,7 @@ public class User extends AbstractAuditingEntity<Long> {
     @Column(columnDefinition = "user_role")
     @Enumerated(STRING)
     @Type(PostgreSQLEnumType.class)
-    private String role;
+    private Roles role;
 
     @Column
     @Size(max = MAX_EMAIL_LEN, message = "Email is too long")

@@ -21,7 +21,7 @@ public class TestObjects {
         return new UserDto()
                 .setName(USER_NAME)
                 .setEmail(USER_EMAIL)
-                .setRole(UserRole.REGULAR)
+                .setRole(UserRole.Roles.REGULAR)
                 .setDob(Instant.now().truncatedTo( ChronoUnit.MICROS ));
     }
 
@@ -29,7 +29,7 @@ public class TestObjects {
         return new User()
                 .setName(USER_NAME_2)
                 .setEmail(USER_EMAIL)
-                .setRole(UserRole.REGULAR)
+                .setRole(UserRole.Roles.REGULAR)
                 .setDob(Instant.now().minus(16L, java.time.temporal.ChronoUnit.DAYS));
     }
 
