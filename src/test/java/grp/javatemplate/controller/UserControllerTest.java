@@ -83,7 +83,7 @@ class UserControllerTest extends BaseIntegrationTest {
     void update_shouldUpdateUser() throws Exception {
         User user = createUser().setName("Alice");
         entityManager.persist(user);
-        UserDto userDto = userMapper.toDto(user);
+        UserDto userDto = userMapper.toDto(user).setName("Bob");
 
         mockMvc.perform(put(endpointProperties.getUsers())
                 .contentType(MediaType.APPLICATION_JSON)
