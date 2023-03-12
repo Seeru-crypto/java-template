@@ -63,5 +63,4 @@ public class UserController {
             return ResponseEntity.ok("Not authenticated");
         }
     }
-    // TODO: https://github.com/ch4mpy/spring-addons/tree/master/samples/tutorials
 }

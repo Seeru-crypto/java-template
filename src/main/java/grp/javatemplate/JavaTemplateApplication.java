@@ -16,11 +16,6 @@ public class JavaTemplateApplication implements CommandLineRunner {
 	public static void main(String[] args) {
 		SpringApplication.run(JavaTemplateApplication.class, args);
 	}
-	// TODO: Add Github actions for build and testing.
-	// https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-	// Run on Pullrequests being opened and closed -  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
-	// Run only on master branch -  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#running-your-pull_request-workflow-based-on-the-head-or-base-branch-of-a-pull-request
-
 	@Override
 	public void run(String... args) {
 		log.info("Swagger enabled at http://localhost:8880/swagger-ui/index.html#/");

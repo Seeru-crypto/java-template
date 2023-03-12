@@ -66,16 +66,14 @@ class UserControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    void save_shouldReturn400IfUserExists() throws Exception {
+    void save_shouldReturn400_IfUserExists() throws Exception {
         User user = createUser().setName("Alice");
         entityManager.persist(user);
-
         UserDto userDto = createUserDto().setName("Alice");
-        byte[] bytes = getBytes(userDto);
 
         mockMvc.perform(post(endpointProperties.getUsers())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(bytes))
+                .content(getBytes(userDto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value(USER_DUPLICATE_NAME));
     }
@@ -85,13 +83,11 @@ class UserControllerTest extends BaseIntegrationTest {
     void update_shouldUpdateUser() throws Exception {
         User user = createUser().setName("Alice");
         entityManager.persist(user);
-
         UserDto userDto = userMapper.toDto(user).setName("Bob");
-        byte[] bytes = getBytes(userDto);
 
         mockMvc.perform(put(endpointProperties.getUsers())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(bytes))
+                .content(getBytes(userDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Bob"));
 
@@ -103,25 +99,23 @@ class UserControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    void update_shouldReturn404IfUserNotFound() throws Exception {
+    void update_shouldReturn404_ifUserNotFound() throws Exception {
         UserDto userDto = createUserDto().setName("Bob").setId(1L);
-        byte[] bytes = getBytes(userDto);
 
         mockMvc.perform(put(endpointProperties.getUsers())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(bytes))
+                .content(getBytes(userDto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value(USER_DOES_NOT_EXIST));
     }
 
     @Test
-    void update_shouldReturn400IfUserIdIsNull() throws Exception {
+    void update_shouldReturn400_ifUserIdIsNull() throws Exception {
         UserDto userDto = createUserDto().setName("Alice");
-        byte[] bytes = getBytes(userDto);
 
         mockMvc.perform(put(endpointProperties.getUsers())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(bytes))
+                .content(getBytes(userDto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value(ID_MUST_NOT_BE_NULL));
     }
@@ -140,7 +134,7 @@ class UserControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    void delete_shouldReturn404IfUserNotFound() throws Exception {
+    void delete_shouldReturn404_ifUserNotFound() throws Exception {
         mockMvc.perform(delete(endpointProperties.getUsers() + "/1"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value(USER_DOES_NOT_EXIST));
