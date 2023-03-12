@@ -53,6 +53,9 @@ public class UserController {
 
     @GetMapping("/access-token")
     public ResponseEntity<String> getAccessToken(JwtAuthenticationToken token) {
+        log.info("REST request to get access token");
+        String userId = token.getTokenAttributes().get("sub").toString();
+        log.info("User id: " + userId);
         boolean isAuthenticated = token.isAuthenticated();
         if (isAuthenticated) {
             return ResponseEntity.ok("Authenticated");
