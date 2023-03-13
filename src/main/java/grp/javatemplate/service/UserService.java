@@ -30,7 +30,7 @@ public class UserService {
         }
         return userRepository.findAll(Sort.by(Sort.Direction.ASC, USER_ID));
     }
-
+    //TODO: sync users with keycloak
     public User save( UserDto userDto ) {
         if ( userRepository.existsByName(userDto.getName()) ) {
             throw new UserException(USER_DUPLICATE_NAME);

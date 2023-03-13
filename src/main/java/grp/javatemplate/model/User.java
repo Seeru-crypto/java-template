@@ -49,12 +49,12 @@ public class User extends AbstractAuditingEntity<Long> {
     @Type(PostgreSQLEnumType.class)
     private Roles role;
 
-    @Column
+    @Column(unique = true)
     @Size(max = MAX_EMAIL_LEN, message = "Email is too long")
     @Email(regexp = EMAIL_REGEX, message = INVALID_USER_EMAIL)
     private String email;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", unique = true)
     @Pattern(regexp = PHONE_NR_REGEX, message = INVALID_USER_PHONE_NUMBER)
     private String phoneNumber;
 //    @OneToMany(

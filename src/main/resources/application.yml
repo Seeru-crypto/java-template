@@ -1,22 +1,8 @@
 spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:9080/keycloak/realms/test
-          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
   application:
     name: java-template
   profiles:
     active: local
-jwt:
-  auth:
-    converter:
-      resource-id: first_client
-      principal-attribute: preferred_username
-logging:
-  level:
-    org.springframework.security: DEBUG
 server:
   port: 8880
   servlet:
