@@ -27,18 +27,19 @@ public class StartupLogger {
     public void initApplication() {
         List<String> profiles = Arrays.asList(env.getActiveProfiles());
 
+        // App default user
+        if (userService.findAll("").isEmpty()){
+            userService.save(new UserDto().setName("test").setEmail("test@email.com").setDob(Instant.now()).setRole(UserRole.Roles.REGULAR));
+        }
+
         if (profiles.contains("local")) {
+            log.info("App hosted at " + "http://localhost:" + env.getProperty("server.port"));
             log.info("local profiles active");
             log.info("Swagger enabled at http://localhost:8880/swagger-ui/index.html#/");
             log.info("Keycloak hosted at http://localhost:9080/keycloak/");
         }
         else if (profiles.contains("develop")){
             log.info("develop profile active");
-        }
-
-        // App default user
-        if (userService.findAll("").isEmpty()){
-            userService.save(new UserDto().setName("test").setEmail("test@email.com").setDob(Instant.now()).setRole(UserRole.Roles.REGULAR));
         }
     }
 }
