@@ -35,7 +35,7 @@ public class StartupLogger {
         if (profiles.contains("local")) {
             log.info("App hosted at " + "http://localhost:" + env.getProperty("server.port"));
             log.info("local profiles active");
-            log.info("Swagger enabled at http://localhost:8880/swagger-ui/index.html#/");
+            log.info("Swagger enabled at http://localhost:8880/api/swagger-ui/index.html#/");
             log.info("Keycloak hosted at http://localhost:9080/keycloak/");
         }
         else if (profiles.contains("develop")){

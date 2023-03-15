@@ -19,11 +19,8 @@ import java.util.stream.Stream;
 // TODO: https://medium.com/geekculture/using-keycloak-with-spring-boot-3-0-376fa9f60e0b
 @Component
 public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
-
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-
     private final JwtAuthConverterProperties properties;
-
     public JwtAuthConverter(JwtAuthConverterProperties properties) {
         this.properties = properties;
     }
