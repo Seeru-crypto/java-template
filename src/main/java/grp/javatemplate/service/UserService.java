@@ -6,6 +6,9 @@ import grp.javatemplate.mapper.UserMapper;
 import grp.javatemplate.model.User;
 import grp.javatemplate.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,8 @@ public class UserService {
     private final UserMapper userMapper;
     private static final String USER_NAME = "name";
     private static final String USER_ID = "id";
+    private static final int DEFAULT_PAGE_NUMBER = 0;
+    private static final int DEFAULT_SIZE_OF_PAGE = 10;
 
     public List<User> findAll( String sortBy ) {
         if(Objects.equals(sortBy, USER_NAME)) {
@@ -30,6 +35,22 @@ public class UserService {
         }
         return userRepository.findAll(Sort.by(Sort.Direction.ASC, USER_ID));
     }
+
+    public Page<User> findAllPages( String sortBy, Integer pageNumber, Integer sizeOfPage ) {
+        if (pageNumber == null) {
+            pageNumber = DEFAULT_PAGE_NUMBER;
+        }
+        if (sizeOfPage == null) {
+            sizeOfPage = DEFAULT_SIZE_OF_PAGE;
+        }
+        if (sortBy == null) {
+            sortBy = USER_ID;
+        }
+
+        Pageable pageable = PageRequest.of(pageNumber, sizeOfPage,Sort.by(Sort.Direction.ASC, sortBy));
+        return userRepository.findAll(pageable);
+    }
+
     //TODO: sync users with keycloak?
     public User save( UserDto userDto ) {
         if ( userRepository.existsByName(userDto.getName()) ) {
@@ -52,14 +73,14 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public boolean isEmailValid(String email) {
+    public static boolean isEmailValid(String email) {
         if (email == null) {
             return true;
         }
         return email.matches(EMAIL_REGEX);
     }
 
-    public boolean isPhoneNumberValid(String phoneNumber) {
+    public static boolean isPhoneNumberValid(String phoneNumber) {
         if (phoneNumber == null) {
             return true;
         }

@@ -26,7 +26,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
-import static grp.javatemplate.TestObjects.clear;
+import static grp.javatemplate.controller.ContextIntegrationTest.clear;
+
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)

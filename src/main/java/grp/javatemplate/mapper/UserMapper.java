@@ -13,7 +13,6 @@ public interface UserMapper extends EntityMapper<UserDto, User> {
 //    @Mapping(target = "stationName", source = "entity.station.name")
 //    FlowStepStationDto toDto( FlowStepStation entity );
 
-
 //    @Mapping(target = "createdBy", ignore = true)
 //    @Mapping(target = "createdAt", ignore = true)
 //    @Mapping(target = "modifiedBy", ignore = true)
