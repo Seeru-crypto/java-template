@@ -2,6 +2,7 @@ package grp.javatemplate.controller;
 
 import grp.javatemplate.controller.dto.UserDto;
 import grp.javatemplate.model.User;
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import static grp.javatemplate.exception.UserException.USER_DUPLICATE_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,6 +35,7 @@ class UserControllerTest extends BaseIntegrationTest {
 
         mockMvc.perform(get(endpointProperties.getUsers()))
                 .andExpect(status().isOk())
+                .andDo(print())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].name").value("Bob"));
     }
@@ -76,6 +79,60 @@ class UserControllerTest extends BaseIntegrationTest {
                 .content(getBytes(userDto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value(USER_DUPLICATE_NAME));
+    }
+
+    @Test
+    void codeBenchmarkTest() throws Exception{
+        // First with enity manager
+
+        //EntityManagerTest()
+        // First:   6918
+        // Second:  5933
+        // Third:   5367
+        //AVG is    6072
+
+
+        // Second with mockMvc
+        // MockMvcTest();
+        // First:  11 550
+        // Secod:  11 109
+        // Third:  10 949
+
+        //AVG is 11 202
+    }
+
+    private void MockMvcTest() throws Exception{
+        StopWatch stopwatch = new StopWatch();
+        stopwatch.start();
+
+        for (int i = 0; i < 1000; i++) {
+            UserDto userDto = createUserDto().setName("Alice "+i);
+            byte[] bytes = getBytes(userDto);
+
+            mockMvc.perform(post(endpointProperties.getUsers())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(bytes))
+                    .andExpect(status().isCreated());
+        }
+
+        stopwatch.stop();
+        long timeTaken = stopwatch.getTime();
+        System.out.println("Time taken by mockMvc: " + timeTaken);
+    }
+
+    private void EntityManagerTest(){
+        StopWatch stopwatch = new StopWatch();
+        stopwatch.start();
+
+        for (int i = 0; i < 1000; i++) {
+            User user = createUser().setName("Alice "+i);
+            entityManager.persist(user);
+        }
+
+        stopwatch.stop();
+        long timeTaken = stopwatch.getTime();
+        System.out.println("Time taken by entity manager: " + timeTaken);
+
     }
 
     // UPDATE tests

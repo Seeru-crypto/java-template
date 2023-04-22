@@ -28,7 +28,7 @@ public class StartupLogger {
         List<String> profiles = Arrays.asList(env.getActiveProfiles());
 
         // App default user
-        if (userService.findAll("").isEmpty()){
+        if (userService.findAll("", 0, 10).isEmpty()){
             userService.save(new UserDto().setName("test").setEmail("test@email.com").setDob(Instant.now()).setRole(UserRole.Roles.REGULAR));
         }
 

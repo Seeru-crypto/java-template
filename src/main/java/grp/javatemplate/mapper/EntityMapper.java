@@ -1,6 +1,7 @@
 package grp.javatemplate.mapper;
 
 import org.mapstruct.Mapping;
+import org.springframework.data.domain.Page;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,4 +29,6 @@ public interface EntityMapper<D, E> {
     D toDto( E entity );
 
     List<D> toDto( Collection<E> entities );
+
+    Page<D> toDto(Page<E> entities );
 }

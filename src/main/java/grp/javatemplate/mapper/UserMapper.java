@@ -3,6 +3,8 @@ package grp.javatemplate.mapper;
 import grp.javatemplate.controller.dto.UserDto;
 import grp.javatemplate.model.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.springframework.data.domain.Page;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper extends EntityMapper<UserDto, User> {
@@ -19,4 +21,10 @@ public interface UserMapper extends EntityMapper<UserDto, User> {
 //    @Mapping(target = "modifiedBy", ignore = true)
 //    @Mapping(target = "modifiedAt", ignore = true)
 //    User toEntity( UserDto dto );
+
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "modifiedBy", ignore = true)
+    @Mapping(target = "modifiedAt", ignore = true)
+    Page<UserDto> toDto( Page<User> entity );
 }

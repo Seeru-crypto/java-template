@@ -9,6 +9,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -33,9 +34,11 @@ public class UserController {
     // @Operation(summary = "Get all users, sort by name", description = "Get all users DESC", tags = {"custom-tag"})
     @Operation(summary = "Get all users, sort by name")
     @GetMapping
-    public  ResponseEntity<List<UserDto>> findAll(@RequestParam(required = false) String sortBy) {
+    public  ResponseEntity<Page<UserDto>> findAll(@RequestParam(required = false) String sortBy) {
         log.info("REST request to findAll users");
-        List<User> res = userService.findAll(sortBy);
+        int startingPageNr = 0;
+        int pageSize = 10;
+        Page<User> res = userService.findAll(sortBy, startingPageNr, pageSize);
         return ResponseEntity.ok(userMapper.toDto(res));
     }
 

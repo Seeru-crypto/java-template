@@ -6,6 +6,9 @@ import grp.javatemplate.mapper.UserMapper;
 import grp.javatemplate.model.User;
 import grp.javatemplate.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +27,16 @@ public class UserService {
     private static final String USER_NAME = "name";
     private static final String USER_ID = "id";
 
-    public List<User> findAll( String sortBy ) {
-        if(Objects.equals(sortBy, USER_NAME)) {
+    public Page<User> findAll(String sortBy, int pageNo, int pageSize) {
+            Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+            return userRepository.findAll(pageable);
+        }
+
+        /* if(Objects.equals(sortBy, USER_NAME)) {
             return userRepository.findAll(Sort.by(Sort.Direction.ASC, USER_NAME));
         }
         return userRepository.findAll(Sort.by(Sort.Direction.ASC, USER_ID));
-    }
+    }*/
     //TODO: sync users with keycloak?
     public User save( UserDto userDto ) {
         if ( userRepository.existsByName(userDto.getName()) ) {
@@ -52,14 +59,14 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public boolean isEmailValid(String email) {
+    public static boolean isEmailValid(String email) {
         if (email == null) {
             return true;
         }
         return email.matches(EMAIL_REGEX);
     }
 
-    public boolean isPhoneNumberValid(String phoneNumber) {
+    public static boolean isPhoneNumberValid(String phoneNumber) {
         if (phoneNumber == null) {
             return true;
         }
