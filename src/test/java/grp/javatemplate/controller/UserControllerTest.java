@@ -2,7 +2,6 @@ package grp.javatemplate.controller;
 
 import grp.javatemplate.controller.dto.UserDto;
 import grp.javatemplate.model.User;
-import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,6 @@ import static grp.javatemplate.exception.UserException.USER_DUPLICATE_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,7 +26,6 @@ class UserControllerTest extends ContextIntegrationTest {
         createUser("Alice");
 
         mockMvc.perform(get(endpointProperties.getUsers()))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalPages").value(1))
                 .andExpect(jsonPath("$.totalElements").value(2))
@@ -46,7 +43,6 @@ class UserControllerTest extends ContextIntegrationTest {
         mockMvc.perform(get(endpointProperties.getUsers())
                         .param("pageNumber", "0")
                         .param("pageSize", "10"))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalPages").value(1))
                 .andExpect(jsonPath("$.totalElements").value(2))
@@ -74,7 +70,6 @@ class UserControllerTest extends ContextIntegrationTest {
         mockMvc.perform(get(endpointProperties.getUsers())
                         .param("pageNumber", "0")
                         .param("pageSize", "1"))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalPages").value(15))
                 .andExpect(jsonPath("$.totalElements").value(15))
@@ -85,7 +80,6 @@ class UserControllerTest extends ContextIntegrationTest {
         mockMvc.perform(get(endpointProperties.getUsers())
                         .param("pageNumber", "2")
                         .param("pageSize", "5"))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalPages").value(3))
                 .andExpect(jsonPath("$.totalElements").value(15))
@@ -96,14 +90,11 @@ class UserControllerTest extends ContextIntegrationTest {
 
         mockMvc.perform(get(endpointProperties.getUsers())
                         .param("pageNumber", "-2"))
-                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value("Page index must not be less than zero"));
 
-
         mockMvc.perform(get(endpointProperties.getUsers())
                         .param("pageSize", "-3"))
-                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value("Page size must not be less than one"));
     }
@@ -132,60 +123,6 @@ class UserControllerTest extends ContextIntegrationTest {
                 .content(getBytes(userDto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value(USER_DUPLICATE_NAME));
-    }
-
-    @Test
-    void codeBenchmarkTest() throws Exception{
-        // First with enity manager
-
-        //EntityManagerTest()
-        // First:   6918
-        // Second:  5933
-        // Third:   5367
-        //AVG is    6072
-
-
-        // Second with mockMvc
-        // MockMvcTest();
-        // First:  11 550
-        // Secod:  11 109
-        // Third:  10 949
-
-        //AVG is 11 202
-    }
-
-    private void MockMvcTest() throws Exception{
-        StopWatch stopwatch = new StopWatch();
-        stopwatch.start();
-
-        for (int i = 0; i < 1000; i++) {
-            UserDto userDto = createUserDto().setName("Alice " + i);
-            byte[] bytes = getBytes(userDto);
-
-            mockMvc.perform(post(endpointProperties.getUsers())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(bytes))
-                    .andExpect(status().isCreated());
-        }
-
-        stopwatch.stop();
-        long timeTaken = stopwatch.getTime();
-        System.out.println("Time taken by mockMvc: " + timeTaken);
-    }
-
-    private void EntityManagerTest(){
-        StopWatch stopwatch = new StopWatch();
-        stopwatch.start();
-
-        for (int i = 0; i < 1000; i++) {
-            User user = createUser("Alice "+i);
-            entityManager.persist(user);
-        }
-
-        stopwatch.stop();
-        long timeTaken = stopwatch.getTime();
-        System.out.println("Time taken by entity manager: " + timeTaken);
-
     }
 
     // UPDATE tests
@@ -234,7 +171,7 @@ class UserControllerTest extends ContextIntegrationTest {
     void delete_shouldDeleteUser() throws Exception {
         User user = createUser("Alice");
 
-        mockMvc.perform(delete(endpointProperties.getUsers() + "/" + user.getId()))
+        mockMvc.perform(delete(String.format("%s/%s",endpointProperties.getUsers(), user.getId())))
                 .andExpect(status().isOk());
 
         List<User> createdUsers = findAll(User.class);
@@ -243,7 +180,7 @@ class UserControllerTest extends ContextIntegrationTest {
 
     @Test
     void delete_shouldReturn404_ifUserNotFound() throws Exception {
-        mockMvc.perform(delete(endpointProperties.getUsers() + "/1"))
+        mockMvc.perform(delete(String.format("%s/%s",endpointProperties.getUsers(), 1L)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value(USER_DOES_NOT_EXIST));
     }
