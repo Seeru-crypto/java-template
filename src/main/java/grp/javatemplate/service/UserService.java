@@ -26,17 +26,31 @@ public class UserService {
     private final UserMapper userMapper;
     private static final String USER_NAME = "name";
     private static final String USER_ID = "id";
+    private static final int DEFAULT_PAGE_NUMBER = 0;
+    private static final int DEFAULT_SIZE_OF_PAGE = 10;
 
-    public Page<User> findAll(String sortBy, int pageNo, int pageSize) {
-            Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-            return userRepository.findAll(pageable);
-        }
-
-        /* if(Objects.equals(sortBy, USER_NAME)) {
+    public List<User> findAll( String sortBy ) {
+        if(Objects.equals(sortBy, USER_NAME)) {
             return userRepository.findAll(Sort.by(Sort.Direction.ASC, USER_NAME));
         }
         return userRepository.findAll(Sort.by(Sort.Direction.ASC, USER_ID));
-    }*/
+    }
+
+    public Page<User> findAllPages( String sortBy, Integer pageNumber, Integer sizeOfPage ) {
+        if (pageNumber == null) {
+            pageNumber = DEFAULT_PAGE_NUMBER;
+        }
+        if (sizeOfPage == null) {
+            sizeOfPage = DEFAULT_SIZE_OF_PAGE;
+        }
+        if (sortBy == null) {
+            sortBy = USER_ID;
+        }
+
+        Pageable pageable = PageRequest.of(pageNumber, sizeOfPage,Sort.by(Sort.Direction.ASC, sortBy));
+        return userRepository.findAll(pageable);
+    }
+
     //TODO: sync users with keycloak?
     public User save( UserDto userDto ) {
         if ( userRepository.existsByName(userDto.getName()) ) {

@@ -1,4 +1,4 @@
-package grp.javatemplate;
+package grp.javatemplate.controller;
 
 import grp.javatemplate.controller.dto.UserDto;
 import grp.javatemplate.model.User;
@@ -10,10 +10,30 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestObjects {
+abstract class ContextIntegrationTest extends BaseIntegrationTest {
     public static final String USER_NAME = "Alice";
     public static final String USER_EMAIL = "email@gmail.com";
     public static final String USER_NAME_2 = "Bob";
+
+    protected User createUser(String name){
+        User newUser =  new User()
+                .setName(name)
+                .setEmail(USER_EMAIL)
+                .setRole(UserRole.Roles.REGULAR)
+                .setDob(Instant.now().minus(16L, java.time.temporal.ChronoUnit.DAYS));
+        entityManager.persist(newUser);
+        return newUser;
+    }
+
+    protected List<User> createUsers(int count){
+        List<User> users = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            String userName = "User " + i;
+            users.add(createUser(userName));
+        }
+        return users;
+    }
+
 
     private static final List<Object> createdEntities = new ArrayList<>();
 
@@ -25,14 +45,6 @@ public class TestObjects {
                 .setDob(Instant.now().truncatedTo( ChronoUnit.MICROS ));
     }
 
-    public static User createUser() {
-        return new User()
-                .setName(USER_NAME_2)
-                .setEmail(USER_EMAIL)
-                .setRole(UserRole.Roles.REGULAR)
-                .setDob(Instant.now().minus(16L, java.time.temporal.ChronoUnit.DAYS));
-    }
-
     public static void clear() {
         createdEntities.clear();
     }
@@ -41,4 +53,9 @@ public class TestObjects {
         createdEntities.forEach(em::persist);
         em.flush();
     }
+
+
+
+
+
 }

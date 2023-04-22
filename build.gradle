@@ -26,15 +26,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.flywaydb:flyway-core'
-	implementation 'org.mapstruct:mapstruct:1.5.2.Final'
+	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.testcontainers:junit-jupiter:1.17.4'
-	testImplementation 'org.testcontainers:postgresql:1.17.4'
-	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.0.0'
+	testImplementation 'org.testcontainers:junit-jupiter:1.17.6'
+	testImplementation 'org.testcontainers:postgresql:1.17.6'
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.0.4'
 	implementation group: 'com.vladmihalcea', name: 'hibernate-types-60', version: '2.21.1'
 
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
@@ -42,7 +42,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	testImplementation 'org.springframework.security:spring-security-test'
-	testImplementation "org.junit.jupiter:junit-jupiter-params:5.9.0"
+	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.2'
 }
 
 tasks.named('test') {

@@ -16,7 +16,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 import static grp.javatemplate.model.enums.UserRole.ROLE_ADMIN;
 import static grp.javatemplate.model.enums.UserRole.ROLE_REGULAR;
@@ -27,19 +26,20 @@ import static org.springframework.http.ResponseEntity.created;
 @Slf4j
 @RequestMapping(path = "${endpoint.users}")
 public class UserController {
-
     private final UserService userService;
     private final UserMapper userMapper;
 
-    // @Operation(summary = "Get all users, sort by name", description = "Get all users DESC", tags = {"custom-tag"})
-    @Operation(summary = "Get all users, sort by name")
+    @Operation(summary = "Get all users, sort by defaults to id, page number defaults to 0, page size defaults to 10")
     @GetMapping
-    public  ResponseEntity<Page<UserDto>> findAll(@RequestParam(required = false) String sortBy) {
+    public  ResponseEntity<Page<UserDto>> findAll(
+            @RequestParam(name = "sortBy",required = false) String sortBy,
+            @RequestParam(name = "pageNumber",required = false) Integer pageNumber,
+            @RequestParam(name = "pageSize",required = false) Integer pageSize
+    ) {
         log.info("REST request to findAll users");
-        int startingPageNr = 0;
-        int pageSize = 10;
-        Page<User> res = userService.findAll(sortBy, startingPageNr, pageSize);
-        return ResponseEntity.ok(userMapper.toDto(res));
+        Page<User> res = userService.findAllPages(sortBy, pageNumber, pageSize);
+        Page<UserDto> resDto = res.map(userMapper::toDto);
+        return ResponseEntity.ok(resDto);
     }
 
     // TODO: Miks see päring töötab?
@@ -59,7 +59,6 @@ public class UserController {
         User user = userMapper.toEntity(userDto);
         return ResponseEntity.ok(userMapper.toDto(userService.update(user)));
     }
-
     @GetMapping("/access-token")
     public ResponseEntity<String> getAccessToken(JwtAuthenticationToken token) {
         log.info("REST request to get access token");
